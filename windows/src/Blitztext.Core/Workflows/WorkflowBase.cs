@@ -65,10 +65,15 @@ public abstract class WorkflowBase : IWorkflow
 
     public void Start()
     {
-        Phase = WorkflowPhase.Running("Aufnahme läuft ...");
+        // Start the recorder first so IsRecording is true when the Running phase fires —
+        // otherwise the menu-bar status resolves to Processing instead of Recording.
         Recorder.StartRecording();
         if (Recorder.ErrorMessage is { } error)
+        {
             Phase = WorkflowPhase.Error(error);
+            return;
+        }
+        Phase = WorkflowPhase.Running("Aufnahme läuft ...");
     }
 
     public void Stop()
