@@ -82,7 +82,7 @@ public partial class SettingsWindow : Window
         }
         _coordinator.SetApiKey(key);
         ApiKeyBox.Password = "";
-        MessageBox.Show(this, "API Key gespeichert.", "Blitztext");
+        System.Windows.MessageBox.Show(this, "API Key gespeichert.", "Blitztext");
     }
 
     private async void InstallModelButton_Click(object sender, RoutedEventArgs e)
