@@ -1,0 +1,9 @@
+# .NET build output
+bin/
+obj/
+publish/
+*.user
+.vs/
+
+# Local model cache (downloaded on demand)
+models/
