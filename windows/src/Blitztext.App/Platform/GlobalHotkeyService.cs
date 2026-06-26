@@ -93,9 +93,9 @@ public sealed class GlobalHotkeyService : IHotkeyService
             // Release on trigger-key up OR when a required modifier is released.
             if (vk == _activeKey || vk == VK_CONTROL || vk == VK_MENU)
             {
-                var type = _activeChord.Value;
+                var releasedType = _activeChord.Value;
                 _activeChord = null;
-                HotkeyEvent?.Invoke(HotkeyEventModel.Up(type));
+                HotkeyEvent?.Invoke(HotkeyEventModel.Up(releasedType));
                 if (vk == _activeKey) return (IntPtr)1;
             }
         }
