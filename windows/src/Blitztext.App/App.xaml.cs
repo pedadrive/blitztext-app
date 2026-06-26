@@ -17,7 +17,7 @@ namespace Blitztext.App;
 /// the coordinator using the configured hold/toggle mode. No main window is shown — the
 /// app lives in the notification area.
 /// </summary>
-public partial class App : Application
+public partial class App : System.Windows.Application
 {
     private AppCoordinator _coordinator = null!;
     private IHotkeyService _hotkeys = null!;

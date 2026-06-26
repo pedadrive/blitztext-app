@@ -77,7 +77,7 @@ public partial class SettingsWindow : Window
         var key = ApiKeyBox.Password.Trim();
         if (key.Length == 0)
         {
-            MessageBox.Show(this, "Bitte einen API Key eingeben.", "Blitztext");
+            System.Windows.MessageBox.Show(this, "Bitte einen API Key eingeben.", "Blitztext");
             return;
         }
         _coordinator.SetApiKey(key);

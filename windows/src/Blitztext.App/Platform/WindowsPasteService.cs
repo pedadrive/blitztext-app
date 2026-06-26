@@ -45,7 +45,7 @@ public sealed class WindowsPasteService : IPasteService
 
     private static T Invoke<T>(Func<T> action)
     {
-        var dispatcher = Application.Current?.Dispatcher;
+        var dispatcher = System.Windows.Application.Current?.Dispatcher;
         return dispatcher is null || dispatcher.CheckAccess()
             ? action()
             : dispatcher.Invoke(action);
@@ -57,13 +57,13 @@ public sealed class WindowsPasteService : IPasteService
     {
         try
         {
-            Clipboard.SetText(text);
+            System.Windows.Clipboard.SetText(text);
         }
         catch (Exception)
         {
             // Clipboard can be transiently locked by another process; retry once.
             Thread.Sleep(30);
-            Clipboard.SetText(text);
+            System.Windows.Clipboard.SetText(text);
         }
     }
 
