@@ -114,14 +114,31 @@ Read [docs/privacy.md](docs/privacy.md) before using the preview with sensitive 
 ## Project Structure
 
 ```text
-BlitztextMac/
-  App/          App lifecycle and paste handling
-  Features/     Workflows, menu bar UI, settings
-  Services/     Recording, OpenAI calls, hotkeys, local storage
-  Views/        Shared SwiftUI views
-build.sh        Local build script
-docs/           Setup, privacy, roadmap, preflight, landing page notes
+BlitztextMac/     macOS app (Swift / SwiftUI)
+  App/            App lifecycle and paste handling
+  Features/       Workflows, menu bar UI, settings
+  Services/       Recording, OpenAI calls, hotkeys, local storage
+  Views/          Shared SwiftUI views
+windows/          Native Windows port (.NET 10 / WPF) — see below
+build.sh          Local build script (macOS)
+docs/             Setup, privacy, roadmap, preflight, landing page notes
 ```
+
+## Windows Port
+
+An experimental, community **Windows port** lives under [`windows/`](windows/). It mirrors the
+same five workflows on a native Windows stack — **.NET 10 (LTS) + WPF**, a system-tray app with
+global push-to-talk hotkeys, on-device transcription via Whisper.net, and the API key stored in
+the Windows Credential Manager.
+
+```powershell
+cd windows
+./build.ps1 -Run     # needs the .NET 10 SDK on Windows 10/11 (x64 or ARM64)
+```
+
+It is built and tested on `windows-latest` in CI. See
+[`windows/README.md`](windows/README.md) and [`windows/ARCHITECTURE.md`](windows/ARCHITECTURE.md)
+for the technology rationale and the macOS→Windows mapping. The macOS app above is unchanged.
 
 ## Local Models
 

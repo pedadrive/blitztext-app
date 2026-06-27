@@ -1,0 +1,65 @@
+name: Windows Build
+
+on:
+  push:
+    branches:
+      - "**"
+    paths:
+      - "windows/**"
+      - ".github/workflows/windows-build.yml"
+  pull_request:
+    paths:
+      - "windows/**"
+      - ".github/workflows/windows-build.yml"
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: dotnet restore windows/Blitztext.sln
+
+      - name: Build (Release)
+        run: dotnet build windows/Blitztext.sln --configuration Release --no-restore
+
+      - name: Test (Blitztext.Core)
+        run: dotnet test windows/src/Blitztext.Core.Tests/Blitztext.Core.Tests.csproj --configuration Release --no-build --verbosity normal
+
+  publish:
+    needs: build-and-test
+    runs-on: windows-latest
+    continue-on-error: true
+    strategy:
+      matrix:
+        rid: [win-x64, win-arm64]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Publish self-contained ${{ matrix.rid }}
+        run: >
+          dotnet publish windows/src/Blitztext.App/Blitztext.App.csproj
+          --configuration Release
+          --runtime ${{ matrix.rid }}
+          --self-contained true
+          --output publish/${{ matrix.rid }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Blitztext-${{ matrix.rid }}
+          path: publish/${{ matrix.rid }}
