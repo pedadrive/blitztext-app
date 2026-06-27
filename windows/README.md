@@ -43,7 +43,7 @@ The OpenAI API key is stored in the **Windows Credential Manager**. Settings liv
 ## Requirements
 
 - Windows 10 (1809+) or Windows 11, x64 or ARM64.
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) to build from source.
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) to build from source.
 - An OpenAI API key for online transcription/rewriting (optional if you only use local mode).
 
 ## Build & run

@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  Build / test / run the Windows Blitztext app. Requires the .NET 8 SDK.
+  Build / test / run the Windows Blitztext app. Requires the .NET 10 SDK.
 
 .EXAMPLES
   ./build.ps1                 # restore + build (Release) + run tests
