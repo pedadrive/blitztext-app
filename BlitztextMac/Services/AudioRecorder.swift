@@ -11,19 +11,47 @@ final class AudioRecorder: NSObject, AVAudioRecorderDelegate {
 
     private var audioRecorder: AVAudioRecorder?
     private var levelTimer: Timer?
-    private var currentFileURL: URL?
 
-    private func makeRecordingURL() -> URL {
-        FileManager.default.temporaryDirectory
-            .appendingPathComponent("blitztext-\(UUID().uuidString).m4a")
+    /// One file per recording: deleting one after its transcription never hits the next.
+    private var fileURL = AudioRecorder.newFileURL()
+
+    private static func newFileURL() -> URL {
+        FileManager.default.temporaryDirectory.appendingPathComponent("recording-\(UUID().uuidString).m4a")
+    }
+
+    /// Deletes this recorder's audio, for recordings that are not transcribed.
+    func discardRecording() {
+        try? FileManager.default.removeItem(at: fileURL)
+        recordingURL = nil
+    }
+
+    /// Recordings a crash or quit left behind, with their padded copies (`AudioPadding`), the
+    /// stretches of live notes and the converted and streamed copies of meeting and audio file
+    /// sound; nothing records or transcribes while the app starts.
+    static func removeLeftoverRecordings() {
+        let temp = FileManager.default.temporaryDirectory
+        let files = (try? FileManager.default.contentsOfDirectory(at: temp, includingPropertiesForKeys: nil)) ?? []
+        for file in files {
+            let name = file.lastPathComponent
+            let leftover = (name.hasPrefix("recording") && file.pathExtension == "m4a")
+                || (["blitztext-padded-", "blitztext-live-", "blitztext-import-"].contains { name.hasPrefix($0) } && file.pathExtension == "wav")
+                || (name.hasPrefix("fluidaudio-streaming-") && file.pathExtension == "raw")
+            if leftover { try? FileManager.default.removeItem(at: file) }
+        }
     }
 
     func startRecording() {
         errorMessage = nil
         lastRecordingDuration = 0
-        recordingURL = nil
-        if let currentFileURL {
-            try? FileManager.default.removeItem(at: currentFileURL)
+        fileURL = Self.newFileURL()
+
+        // Without access macOS records silence; say why instead of "Keine Aufnahme erkannt".
+        switch AVCaptureDevice.authorizationStatus(for: .audio) {
+        case .denied, .restricted:
+            errorMessage = MicrophonePermission.deniedMessage
+            return
+        default:
+            break
         }
 
         let settings: [String: Any] = [
@@ -34,16 +62,18 @@ final class AudioRecorder: NSObject, AVAudioRecorderDelegate {
         ]
 
         do {
-            let fileURL = makeRecordingURL()
-            currentFileURL = fileURL
             audioRecorder = try AVAudioRecorder(url: fileURL, settings: settings)
             audioRecorder?.delegate = self
             audioRecorder?.isMeteringEnabled = true
-            audioRecorder?.record()
+            guard audioRecorder?.record() == true else {
+                audioRecorder = nil
+                errorMessage = "Die Aufnahme lie\u{00DF} sich nicht starten. Darf Blitztext das Mikrofon nutzen?"
+                return
+            }
             isRecording = true
+            recordingURL = nil
             startMetering()
         } catch {
-            currentFileURL = nil
             errorMessage = "Aufnahme konnte nicht gestartet werden: \(error.localizedDescription)"
         }
     }
@@ -53,22 +83,8 @@ final class AudioRecorder: NSObject, AVAudioRecorderDelegate {
         lastRecordingDuration = audioRecorder?.currentTime ?? 0
         audioRecorder?.stop()
         isRecording = false
-        recordingURL = currentFileURL
-        currentFileURL = nil
-        audioRecorder = nil
+        recordingURL = fileURL
         audioLevel = 0
-    }
-
-    func discardRecording() {
-        if let recordingURL {
-            try? FileManager.default.removeItem(at: recordingURL)
-            self.recordingURL = nil
-        }
-
-        if let currentFileURL {
-            try? FileManager.default.removeItem(at: currentFileURL)
-            self.currentFileURL = nil
-        }
     }
 
     private func startMetering() {

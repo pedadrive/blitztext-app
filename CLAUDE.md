@@ -40,13 +40,13 @@ windows/
   ARCHITECTURE.md              technology decision + macOS→Windows mapping
   README.md / build.ps1
 .github/workflows/
-  ci.yml                       macOS build on macos-14 (+ secret-scan)
+  ci.yml                       macOS build on macos-26 (+ secret-scan)
   windows-build.yml            Windows build/test/publish on windows-latest (.NET 10)
 ```
 
 ## Build / verify
 
-- **macOS:** `./build.sh --debug` (needs macOS + Xcode). CI: `ci.yml` on `macos-14`.
+- **macOS:** `./build.sh --debug` (needs macOS + Xcode). CI: `ci.yml` on `macos-26`.
 - **Windows:** `cd windows && ./build.ps1` (needs Windows + .NET 10 SDK). CI:
   `windows-build.yml` on `windows-latest` (`setup-dotnet` pulls the SDK per run).
 
