@@ -1,6 +1,6 @@
-# Spec-Entwurf: Windows + Android mit offenem, konfigurierbarem LLM-Standard
+# Spec: Windows + Android mit offenem, konfigurierbarem LLM-Standard
 
-Stand: 2026-10-27 · Status: **Entwurf** (zur Abstimmung mit dem Nutzer)
+Stand: 2026-10-27 · Status: **abgestimmt** — Empfehlungen aus §10 vom Nutzer am 2026-10-27 übernommen (siehe §11)
 
 ## 1. Ziel
 
@@ -163,7 +163,7 @@ Prüfweg ist der **Linux-Cloud-Container**; GitHub-CI läuft zusätzlich beim Pu
 | 7 | Android: Umschreiben über Profil, Workflows angleichen | Funktionsgleichstand Kern-Workflows |
 | 8 | Eigener App-Name/Icon vor jeder Veröffentlichung | markenrechtlich sauber |
 
-## 10. Offene Fragen an den Nutzer (je mit Empfehlung)
+## 10. Fragen an den Nutzer (je mit Empfehlung)
 
 1. **Android-Technik:** MAUI mit Core oder natives Kotlin?
    → *Empfehlung:* natives Kotlin (IME-Integration, Größe, sherpa-onnx-Beispiele).
@@ -179,3 +179,21 @@ Prüfweg ist der **Linux-Cloud-Container**; GitHub-CI läuft zusätzlich beim Pu
    installieren bzw. dürfen die Download-Hosts freigegeben werden?
    → *Empfehlung:* ja, über das Setup-Skript der Cloud-Umgebung.
 7. **App-Name/Icon** für eine eigene Veröffentlichung? → *Empfehlung:* vor Etappe 6 festlegen.
+
+## 11. Entscheidungen (Nutzer, 2026-10-27)
+
+Alle Empfehlungen aus §10 sind übernommen:
+
+| Nr | Entscheidung |
+|---|---|
+| 1 | Android als natives Kotlin |
+| 2 | Einfügen über eine eigene Tastatur (IME) |
+| 3 | Windows: Whisper.net bleibt bis zum Parakeet-Spike (Etappe 4), Wechsel nach Deutsch-Messung |
+| 4 | Heimserver: whisper.cpp oder Speaches (Transkription), llama.cpp oder Ollama (Chat) |
+| 5 | Cloud-Profil bleibt, nur auf ausdrücklichen Wunsch (opt-in) |
+| 6 | Container-Testumgebung: .NET-SDK (später Android-SDK) über Setup-Hook; Host-Freigaben setzt der Nutzer in der Cloud-Umgebung |
+| 7 | Eigener App-Name und Icon vor Etappe 6 (TRADEMARKS.md) |
+
+Weitere Vorgaben des Nutzers: Zielplattformen Windows und Android (Pixel 9 Pro); offener,
+in der App konfigurierbarer LLM-Standard; Transkription später auf den Heimserver
+(Tailscale) auslagerbar; Tests in der Cloud statt über GitHub; möglichst alles lokal.
